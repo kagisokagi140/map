@@ -4,6 +4,9 @@ import { Label } from "@/components/ui/label";
 import Geocode from "./map/geocode";
 import { CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList } from "@/components/ui/tabs";
+import { TabsContent, TabsTrigger } from "@radix-ui/react-tabs";
+
 
 type LocationsSearchProps = {
   query: string;
@@ -14,7 +17,7 @@ type LocationsSearchProps = {
   maxSize: number;
   maxWidth: number;
   handleApply: (minValue: number, maxValue: number) => void;
- 
+
 };
 
 export default function LocationsSearch({
@@ -24,10 +27,10 @@ export default function LocationsSearch({
   handleResultSelect,
   minSize,
   maxSize,
-  maxWidth, 
+  maxWidth,
   handleApply,
 }: LocationsSearchProps) {
- 
+
 
   return (
     <div className="grid gap-4">
@@ -83,11 +86,29 @@ export default function LocationsSearch({
             className="col-span-2 h-8"
           />
         </div>
+
+        <Tabs defaultValue="traffic" >
+
+          <TabsList>
+            <TabsTrigger value="traffic">traffic</TabsTrigger>
+            <TabsTrigger value="semantic">semantic</TabsTrigger>
+          </TabsList>
+          <TabsContent value="traffic">You are now on traffic .</TabsContent>
+          <TabsContent value="semantic">You are now on semantic.</TabsContent>
+        </Tabs>
+
+
+        <div>
+
+
+        </div>
+
+
         <CardFooter className="flex my-4 justify-between">
-        <Button variant="ghost">Cancel</Button>
-        <Button onClick={() => handleApply(minSize, maxSize)}>Apply</Button>
-     
-      </CardFooter>
+          <Button variant="ghost">Cancel</Button>
+          <Button onClick={() => handleApply(minSize, maxSize)}>Apply</Button>
+
+        </CardFooter>
       </div>
     </div>
   );

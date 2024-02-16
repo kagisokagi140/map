@@ -42,7 +42,7 @@ export function Tab({
           handleResultSelect={handleResultSelect}
           minSize={minSize}
           maxSize={maxSize}
-          maxWidth={maxWidth}
+          // maxWidth={maxWidth}
           handleApply={handleApply}
         />
        

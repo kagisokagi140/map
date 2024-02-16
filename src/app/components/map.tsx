@@ -195,7 +195,9 @@ const MapBox = () => {
     <div className="flex px-6 space-x-8">
       <div className=" flex w-[300px] lg:relative fixed z-10 w-full justify-between m-16 lg:m-0">
         <SearchTab handleInputChange={handleInputChange} handleResultSelect={handleResultSelect}  query={query}  suggestions={suggestions} min={min} max={max} maxWidth={maxWidth}/>
-     
+        
+
+        
       </div>
 
       <div className="w-full">
