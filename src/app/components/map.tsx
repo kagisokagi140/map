@@ -1,11 +1,10 @@
 "use client";
-import "mapbox-gl/dist/mapbox-gl.css";
+//import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useState, useEffect, useRef } from "react";
 import mapboxgl, { accessToken } from "mapbox-gl";
 import { Card } from "@/components/ui/card";
 import ReactDOM from "react-dom";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
-
 import { generateRandomPolygons } from "./map/genPolygons";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import { Tab } from "./tabs";
@@ -46,8 +45,8 @@ const SearchTab = ({query,handleInputChange,suggestions,handleResultSelect  } : 
 const MapBox = () => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   // this is setting up the location to London (initial location)
-  const [lng] = useState(-0.2);
-  const [lat] = useState(51.5);
+  const [lng] = useState(28.1857);
+  const [lat] = useState(-26.2041);
   const mapStyle = "mapbox://styles/mapbox/satellite-v9";
   // mapbox://styles/mapbox/satellite-v9
 // mapbox://styles/mapbox/satellite-streets-v11
@@ -62,11 +61,28 @@ const MapBox = () => {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [min, setMin] = useState<number>(10); // Provide a default value (e.g., 0)
   const [max, setMax] = useState<number>(20); // Provide a default value (e.g., 0)
- 
   const [maxWidth, setWidth] = useState<number>(20); // Provide a default value (e.g., 0)
  
+
+const fetchNonGpsTrafficData = async() =>{
+  try{
+    const response = await fetch("/api/non-gps-traffic-data");
+    if(!response.ok){
+      throw new Error("Failed to fetch non-GPS traffic data");
+    }
+    const data =await response.json();
+  }catch(error){
+    console.error("Error fetching non-GPS traffic data:",error);
+  }
+}
+
+useEffect(()=>{
+  fetchNonGpsTrafficData();
+},[]);
+
   // Declare the map variable outside the useEffect
-  mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_KEY as string;
+  mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX as string;
+
 
   const handleResultSelect = async (
     result: any,
@@ -104,16 +120,34 @@ const MapBox = () => {
   let map: mapboxgl.Map;
   useEffect(() => {
   
-    map = new mapboxgl.Map({
+    const map = new mapboxgl.Map({
       container: mapContainer.current!,
       style: mapStyle,
       center: [lng, lat],
       zoom: zoom,
-      maxBounds: [-6.22, 49.53, 3.02, 58.84],
+      maxBounds: [
+        [-26.4,-46.8],
+        [51.3,37.3]
+      ],
     });
 
-    map.on("style.load", () => {
+    map.on("load", () => {
       map.addControl(new mapboxgl.NavigationControl());
+
+      map.addLayer({
+        id: "traffic",
+        type:"line",
+        source:{
+          type:"vector",
+          url: "mapbox://mapbox.mapbox-traffic-v1"
+        },
+        "source-layer": "traffic",
+        paint:{
+          "line-color" :"#ff0000",
+          "line-width" :2
+        }
+      })
+
 
       const polygons = generateRandomPolygons();
 
@@ -181,8 +215,11 @@ const MapBox = () => {
 
     map.addControl(geocoder);
 
-    return () => map.remove();
-  }, [lng, lat, mapStyle, zoom]);
+    return () => {map.remove();
+      geocoderRef.current?.off("result");
+      geocoderRef.current?.off("results");
+  };
+}, [lng, lat, mapStyle, zoom]);
 
   const handleInputChange = (event: { target: { value: any } }) => {
     const input = event.target.value;
@@ -191,13 +228,27 @@ const MapBox = () => {
     geocoderRef.current!.setInput(input); // Update the input of the geocoder
   };
 
+  const fetchAndDisplayOptimizedRoute =async (waypoints: any[]) => {
+    try{
+      const response =await fetch(
+        `https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${waypoints.join(
+          ";"
+        )}?access_token=${mapboxgl.accessToken}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch optimized route");
+      }
+      const data = await response.json();
+
+    } catch (error) {
+      console.error("Error fetching optimized route",error);
+    }
+  };
+
   return (
     <div className="flex px-6 space-x-8">
       <div className=" flex w-[300px] lg:relative fixed z-10 w-full justify-between m-16 lg:m-0">
         <SearchTab handleInputChange={handleInputChange} handleResultSelect={handleResultSelect}  query={query}  suggestions={suggestions} min={min} max={max} maxWidth={maxWidth}/>
-        
-
-        
       </div>
 
       <div className="w-full">
