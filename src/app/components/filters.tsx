@@ -20,55 +20,6 @@ import { Switch } from "@/components/ui/switch";
 
 import { cn } from "@/lib/utils";
 
-const properties = [
-  {
-    name: "AONB",
-    enabled: false,
-  },
-  {
-    name: "Ancient Woodland",
-    enabled: false,
-  },
-  {
-    name: "Biosphere Reserves",
-    enabled: false,
-  },
-  {
-    name: "Conservation Areas",
-    enabled: false,
-  },
-  {
-    name: "National Parks",
-    enabled: false,
-  },
-  {
-    name: "World Heritage Sites",
-    enabled: false,
-  },
-];
-
-const topographyOptions = [
-  { value: "next", label: "Zone 1" },
-  { value: "sveltekit", label: "Zone 2" },
-  { value: "astro", label: "Zone 3" },
-  { value: "nuxt", label: "Zone 3A" },
-];
-
-function SwitchButton({ title }: any) {
-  return (
-    <div className="flex items-center space-x-2">
-      <Switch id="airplane-mode" />
-      <Label htmlFor="airplane-mode">
-        {title.name}
-        <br />{" "}
-        <p className="text-sm text-muted-foreground font-normal">
-          {title.description}
-        </p>
-      </Label>
-    </div>
-  );
-}
-
 type CardProps = React.ComponentProps<typeof Card>;
 
 function Constraints({ className, ...props }: CardProps) {
@@ -76,30 +27,19 @@ function Constraints({ className, ...props }: CardProps) {
     <div className={cn("", className)} {...props}>
       <div className=" flex items-center space-x-2 rounded-md   my-4">
         <div className="flex-2 space-y-1">
-          <p className="text-sm font-medium leading-none">Protexted Areas</p>
+          <p className="text-sm font-medium leading-none">Driving Suggestions</p>
           <p className="text-sm text-muted-foreground">
-            Protected areas are designated conserve natural and cultural
-            resources, and recreation.
+          Weather - on your way to Hyde Park you are to 
+expect heavy rain and thunderstorms.
+
+You are to expect a car accident on Jan Smuts Avenue
+slowing down the flow of traffic.
           </p>
         </div>
-
-        <div className="w-fit bg-white">
-          <Switch /> Apply All
-        </div>
+ 
       </div>
 
-      <div>
-        {properties.map((name, index) => (
-          <div
-            key={index}
-            className="mb-4 flex items-start pb-4 last:mb-0 last:pb-0"
-          >
-            <div className="space-y-1">
-              <SwitchButton title={name} />
-            </div>
-          </div>
-        ))}
-      </div>
+      
     </div>
   );
 }
@@ -110,21 +50,6 @@ export function Filters() {
       <CardContent>
         <form>
           <div className="grid w-full items-center gap-4">
-            <div className="flex bg-white flex-col space-y-1.5">
-              <Label htmlFor="name">Topography </Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select" />
-                  <SelectContent position="popper">
-                    {topographyOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </SelectTrigger>
-              </Select>
-            </div>
 
             <Ownership />
             <Constraints />
@@ -132,8 +57,8 @@ export function Filters() {
         </form>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="ghost">Cancel</Button>
-        <Button>Apply</Button>
+        <Button variant="outline">Exit</Button>
+        <Button variant="outline">Find</Button>
       </CardFooter>
     </Card>
   );
