@@ -46,7 +46,7 @@ export default function LocationsSearch({
             value={query}
             onChange={handleInputChange}
             suggestions={suggestions}
-            onSelect={handleResultSelect}
+            onSelec t={handleResultSelect}
           />
           <div className="uppercase col-span-3 mx-auto items-center justify-center">
             OR
