@@ -46,7 +46,7 @@ export default function Geocode({
 <ul className="py-2">
         {suggestions?.map((suggestion: Suggestion) => (
           <li
-            className="text-left bg-black roundend-ig cursor-pointer text-sm w-56 p-4 py-2   hover:bg-slate-400  py-3 bg-slate-100 rounded-sm"
+            className="text-left cursor-pointer text-sm w-56 p-4 py-2   hover:bg-slate-300  py-2 bg-slate-100 rounded-sm"
             key={suggestion.id}
             onClick={() => handleItemClick(suggestion)}
           >
