@@ -45,16 +45,16 @@ const SearchTab = ({query,handleInputChange,suggestions,handleResultSelect  } : 
 
 const MapBox = () => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
-  // this is setting up the location to London (initial location)
-  const [lng] = useState(-0.2);
-  const [lat] = useState(51.5);
+  // this is setting up the location to South Africa Gauteng (initial location)
+  const [lng] = useState(28.0473);
+  const [lat] = useState(-26.2041);
   const mapStyle = "mapbox://styles/mapbox/satellite-v9";
   // mapbox://styles/mapbox/satellite-v9
 // mapbox://styles/mapbox/satellite-streets-v11
   const [query, setQuery] = useState("");
   // when a user click
   const [suggestions, setSuggestions] = useState([]);
-  const [zoom, setZoom] = useState(6);
+  const [zoom, setZoom] = useState(8);
   // State for isochrones data
   const [isochronesData, setIsochrones] = useState<any>(null);
   const geocoderRef = useRef<MapboxGeocoder | null>(null);
@@ -109,7 +109,10 @@ const MapBox = () => {
       style: mapStyle,
       center: [lng, lat],
       zoom: zoom,
-      maxBounds: [-6.22, 49.53, 3.02, 58.84],
+      maxBounds:[
+        [-24.6,-46.8], // Southwest coordinates of South Africa Gauteng
+        [-51.3,37.3] // Northeast coordinates of South Africa Gauteng
+      ] 
     });
 
     map.on("style.load", () => {
