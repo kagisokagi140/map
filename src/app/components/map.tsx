@@ -10,51 +10,62 @@ import { generateRandomPolygons } from "./map/genPolygons";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import { Tab } from "./tabs";
 import addMapLayers from "./map/maplayers";
+import { Button } from "@/components/ui/button";
 
-
-const SearchTab = ({query,handleInputChange,suggestions,handleResultSelect  } : any) => {
- 
+const SearchTab = ({
+  query,
+  handleInputChange,
+  suggestions,
+  handleResultSelect,
+  mapstyle,
+}: any) => {
   const [min, setMin] = useState<number>(10); // Provide a default value (e.g., 0)
   const [max, setMax] = useState<number>(20); // Provide a default value (e.g., 0)
   const [width, setWidth] = useState<number>(5); // Provide a default value (e.g., 0)
 
-  const handleApply = (minValue: number, maxValue: number, maxWidth: number) => {
+  const handleApply = (
+    minValue: number,
+    maxValue: number,
+    maxWidth: number
+  ) => {
     // Update the min and max values
     setMin(isNaN(minValue) ? 0 : minValue);
     setMax(isNaN(maxValue) ? 0 : maxValue);
-    setWidth(maxWidth); 
+    setWidth(maxWidth);
   };
-  
- 
- return(
-<>
-<Tab
-          query={query}
-          handleInputChange={handleInputChange}
-          suggestions={suggestions}
-          handleResultSelect={handleResultSelect}
-          minSize={min} // Pass minSize as prop
-          maxSize={max} // Pass maxSize as prop
-          maxWidth={width}
-          handleApply={handleApply}
-      /> 
 
-</>
-  )};
-
+  return (
+    <>
+      <Tab
+        query={query}
+        handleInputChange={handleInputChange}
+        suggestions={suggestions}
+        handleResultSelect={handleResultSelect}
+        minSize={min} // Pass minSize as prop
+        maxSize={max} // Pass maxSize as prop
+        maxWidth={width}
+        handleApply={handleApply}
+        mapstyle={mapstyle}
+      />
+    </>
+  );
+};
 
 const MapBox = () => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   // this is setting up the location to South Africa Gauteng (initial location)
   const [lng] = useState(28.0473);
   const [lat] = useState(-26.2041);
-  const mapStyle = "mapbox://styles/mapbox/satellite-v9";
+  // const mapStyle = "mapbox://styles/mapbox/satellite-v9";
   // mapbox://styles/mapbox/satellite-v9
-// mapbox://styles/mapbox/satellite-streets-v11
+  // mapbox://styles/mapbox/satellite-streets-v11
   const [query, setQuery] = useState("");
   // when a user click
   const [suggestions, setSuggestions] = useState([]);
   const [zoom, setZoom] = useState(8);
+
+  const [mapStyle, setMapStyle] = useState(false);
+
   // State for isochrones data
   const [isochronesData, setIsochrones] = useState<any>(null);
   const geocoderRef = useRef<MapboxGeocoder | null>(null);
@@ -62,15 +73,13 @@ const MapBox = () => {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [min, setMin] = useState<number>(10); // Provide a default value (e.g., 0)
   const [max, setMax] = useState<number>(20); // Provide a default value (e.g., 0)
- 
+
   const [maxWidth, setWidth] = useState<number>(20); // Provide a default value (e.g., 0)
- 
+
   // Declare the map variable outside the useEffect
   mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_KEY as string;
 
-  const handleResultSelect = async (
-    result: any,
-    polygons: any  ) => {
+  const handleResultSelect = async (result: any, polygons: any) => {
     const coordinates = result.geometry.coordinates;
 
     // Fetch isochrones data from API route
@@ -99,20 +108,21 @@ const MapBox = () => {
       console.error("Error fetching isochrones:", error);
       // Handle error
     }
-  }; 
+  };
 
   let map: mapboxgl.Map;
   useEffect(() => {
-  
     map = new mapboxgl.Map({
       container: mapContainer.current!,
-      style: mapStyle,
+      style: mapStyle
+        ? "mapbox://styles/mapbox/satellite-v9"
+        : "mapbox://styles/mapbox/satellite-streets-v11",
       center: [lng, lat],
       zoom: zoom,
-      maxBounds:[
-        [-24.6,-46.8], // Southwest coordinates of South Africa Gauteng
-        [-51.3,37.3] // Northeast coordinates of South Africa Gauteng
-      ] 
+      maxBounds: [
+        [-24.6, -46.8], // Southwest coordinates of South Africa Gauteng
+        [-51.3, 37.3], // Northeast coordinates of South Africa Gauteng
+      ],
     });
 
     map.on("style.load", () => {
@@ -197,10 +207,16 @@ const MapBox = () => {
   return (
     <div className="flex px-6 space-x-8">
       <div className=" flex w-[300px] lg:relative fixed z-10 w-full justify-between m-16 lg:m-0">
-        <SearchTab handleInputChange={handleInputChange} handleResultSelect={handleResultSelect}  query={query}  suggestions={suggestions} min={min} max={max} maxWidth={maxWidth}/>
-        
-
-        
+        <SearchTab
+          handleInputChange={handleInputChange}
+          handleResultSelect={handleResultSelect}
+          query={query}
+          suggestions={suggestions}
+          min={min}
+          max={max}
+          maxWidth={maxWidth}
+          mapstyle={() => setMapStyle(!mapStyle)}
+        />
       </div>
 
       <div className="w-full">
@@ -217,5 +233,3 @@ const MapBox = () => {
 };
 
 export default MapBox;
-
-
