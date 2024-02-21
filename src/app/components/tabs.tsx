@@ -31,8 +31,8 @@ export function Tab({
         Create Search
       </div>
       <TabsList className="grid  w-full grid-cols-2">
-        <TabsTrigger value="account">Location</TabsTrigger>
-        <TabsTrigger value="password">Filters</TabsTrigger>
+        <TabsTrigger value="account">Traffic</TabsTrigger>
+        <TabsTrigger value="password">Semantic</TabsTrigger>
       </TabsList>
       <TabsContent value="account">
         <LocationCard
