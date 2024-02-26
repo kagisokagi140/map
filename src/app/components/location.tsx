@@ -46,7 +46,7 @@ export default function LocationsSearch({
             value={query}
             onChange={handleInputChange}
             suggestions={suggestions}
-            onSelect={handleResultSelect}
+            onSelec t={handleResultSelect}
           />
           <div className="uppercase col-span-3 mx-auto items-center justify-center">
             OR
@@ -57,7 +57,7 @@ export default function LocationsSearch({
           <Input
             value={maxWidth}
             id="maxWidth"
-            defaultValue="London"
+            defaultValue="Gauteng"
             className="col-span-2 h-8"
             onChange={(event) =>
               handleApply(parseInt(event.target.value), maxWidth)
@@ -87,26 +87,15 @@ export default function LocationsSearch({
           />
         </div>
 
-        <Tabs defaultValue="traffic" >
-
-          <TabsList>
-            <TabsTrigger value="traffic">traffic</TabsTrigger>
-            <TabsTrigger value="semantic">semantic</TabsTrigger>
-          </TabsList>
-          <TabsContent value="traffic">You are now on traffic .</TabsContent>
-          <TabsContent value="semantic">You are now on semantic.</TabsContent>
-        </Tabs>
 
 
         <div>
 
 
         </div>
-
-
         <CardFooter className="flex my-4 justify-between">
-          <Button variant="ghost">Cancel</Button>
-          <Button onClick={() => handleApply(minSize, maxSize)}>Apply</Button>
+          <Button variant="outline">Cancel</Button>
+          <Button variant="outline"  onClick={() => handleApply(minSize, maxSize)}>Apply</Button>
 
         </CardFooter>
       </div>

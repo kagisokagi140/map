@@ -2,7 +2,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LocationCard } from "./LocationCard";
 import { Filters } from "./filters";
 
-
 type TabProps = {
   query: string;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -11,19 +10,20 @@ type TabProps = {
   minSize: number;
   maxSize: number;
   maxWidth: number;
-  handleApply: any
+  handleApply: any;
+  mapstyle?: any;
 };
-
 
 export function Tab({
   query,
   handleInputChange,
   suggestions,
-  handleResultSelect, 
+  handleResultSelect,
   minSize,
   maxSize,
   maxWidth,
-  handleApply
+  handleApply,
+  mapstyle,
 }: TabProps) {
   return (
     <Tabs defaultValue="account" className="w-[400px]  ">
@@ -31,9 +31,14 @@ export function Tab({
         Create Search
       </div>
       <TabsList className="grid  w-full grid-cols-2">
-        <TabsTrigger value="account">Location</TabsTrigger>
-        <TabsTrigger value="password">Filters</TabsTrigger>
+        <TabsTrigger value="account" onClick={mapstyle}>
+          Traffic
+        </TabsTrigger>
+        <TabsTrigger value="password" onClick={mapstyle}>
+          Semantic
+        </TabsTrigger>
       </TabsList>
+
       <TabsContent value="account">
         <LocationCard
           query={query}
@@ -45,7 +50,6 @@ export function Tab({
           // maxWidth={maxWidth}
           handleApply={handleApply}
         />
-       
       </TabsContent>
       <TabsContent value="password">
         <Filters />
