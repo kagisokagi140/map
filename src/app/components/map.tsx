@@ -1,14 +1,17 @@
 "use client";
-//import "mapbox-gl/dist/mapbox-gl.css";
+import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useState, useEffect, useRef } from "react";
 import mapboxgl, { accessToken } from "mapbox-gl";
 import { Card } from "@/components/ui/card";
 import ReactDOM from "react-dom";
+import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import { generateRandomPolygons } from "./map/genPolygons";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import { Tab } from "./tabs";
+import axios from "axios";
 import addMapLayers from "./map/maplayers";
+//import { Button } from "@/components/ui/button";
 import { Button } from "@/components/ui/button";
 import { TiWeatherCloudy } from "react-icons/ti";
 import { FaGasPump } from "react-icons/fa";
@@ -101,9 +104,9 @@ const MapBox = () => {
       const isochrones = data.isochrones;
 
       let map = mapRef.current;
-      if (map) {
+      if (mapRef.current) {
         setZoom(8);
-        map.flyTo({ center: coordinates, zoom: 10 });
+        mapRef.current.flyTo({ center: coordinates, zoom: 10 });
         setIsochrones(isochrones);
 
         addMapLayers(map, polygons, isochrones);
@@ -116,9 +119,13 @@ const MapBox = () => {
     }
   };
 
-  let map: mapboxgl.Map;
+ 
   useEffect(() => {
 
+
+    mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX as string;
+
+    let map: mapboxgl.Map;
     map = new mapboxgl.Map({
       container: mapContainer.current!,
       style: mapStyle
@@ -135,6 +142,18 @@ const MapBox = () => {
 
     map.on("load", () => {
       map.addControl(new mapboxgl.NavigationControl());
+    
+
+      map.addControl(
+      new MapboxDirections({
+        accessToken:mapboxgl.accessToken,
+        unit: "metric",
+        profile:"mapbox/driving",
+
+      }),
+      "top-left"
+      
+      );
 
       map.addLayer({
         id: "traffic",
@@ -147,7 +166,7 @@ const MapBox = () => {
         paint:{
           "line-color" :"#ff0000",
           "line-width" :2
-        }
+        } 
       })
 
 
@@ -220,11 +239,15 @@ const MapBox = () => {
 
     return () => {
       map.remove();
-      if(geocoderRef.current){
-    
-        geocoderRef.current.off("result");
-        geocoderRef.current.off("results");
-      
+      if(geocoderRef.current && typeof geocoderRef.current.off ==="function"){
+        try{
+          geocoderRef.current.off("result");
+          geocoderRef.current.off("results");
+        }catch (error){
+          console.error("Error removing event listeners from Mapbox Geocoder:", error);
+        }
+    }else{
+      console.warn("Mapbox Geocoder ref or off is not available.");
     }
   };
 }, [lng, lat, mapStyle, zoom]);
@@ -236,22 +259,55 @@ const MapBox = () => {
     geocoderRef.current!.setInput(input); // Update the input of the geocoder
   };
 
-  const fetchAndDisplayOptimizedRoute =async (waypoints: any[]) => {
+  async (waypoints: any[]) => {
     try{
-      const response =await fetch(
+      const response =await axios.get(
         `https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${waypoints.join(
           ";"
         )}?access_token=${mapboxgl.accessToken}`
       );
-      if (!response.ok) {
-        throw new Error("Failed to fetch optimized route");
-      }
-      const data = await response.json();
+      const data = response.data;
+      const route = data.routes[0];
+      const geometry = route.geometry;
+
+     renderRoute(geometry);
 
     } catch (error) {
       console.error("Error fetching optimized route",error);
     }
   };
+
+  const renderRoute = (geometry: any) => {
+    if (mapRef.current){
+      mapRef.current.addSource("route", {
+        type:"geojson",
+        data:{
+          type:"Feature",
+          properties:{},
+          geometry:{
+            type :"LineString",
+            coordinates:geometry.coordinates,
+          }
+       }
+      })
+      
+      mapRef.current.addLayer({
+        id: "route",
+        type:"line",
+        source:"route",
+        layout:{
+          "line-join" : "round",
+          "line-cap": "round",
+        },
+        paint:{
+          "line-color": "#0000ff",
+          "line-width" : 5,
+        },
+      });
+    }
+  };
+
+ 
 
   return (
     <div className="flex px-6 space-x-8">
@@ -271,7 +327,7 @@ const MapBox = () => {
       </div>
 
       <div className="w-full">
-        <div id="map">
+        <div id="map" >
           <div
             data-query={query}
             className="bg-white  w-[800px] h-[800px] md:w-[1100px] h-[800px]  shadow-lg my-2 rounded-2xl"
