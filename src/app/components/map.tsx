@@ -1,5 +1,5 @@
 "use client";
-import "mapbox-gl/dist/mapbox-gl.css";
+//import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useState, useEffect, useRef } from "react";
 import mapboxgl, { accessToken } from "mapbox-gl";
 import { Card } from "@/components/ui/card";
@@ -77,6 +77,7 @@ const MapBox = () => {
   const geocoderRef = useRef<MapboxGeocoder | null>(null);
   // Use a ref to store the map instance
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const wayRef = useRef<any>(null);
   const [min, setMin] = useState<number>(10); // Provide a default value (e.g., 0)
   const [max, setMax] = useState<number>(20); // Provide a default value (e.g., 0)
 
@@ -130,7 +131,7 @@ const MapBox = () => {
       container: mapContainer.current!,
       style: mapStyle
         ? "mapbox://styles/mapbox/satellite-v9"
-        : "mapbox://styles/mapbox/satellite-streets-v11",
+        : "mapbox://styles/mapbox/satellite-streets-v12",
       center: [lng, lat],
       zoom: zoom,
       maxBounds: [
@@ -149,6 +150,7 @@ const MapBox = () => {
         accessToken:mapboxgl.accessToken,
         unit: "metric",
         profile:"mapbox/driving",
+        alternatives: true,
 
       }),
       "top-left"
@@ -163,10 +165,7 @@ const MapBox = () => {
           url: "mapbox://mapbox.mapbox-traffic-v1"
         },
         "source-layer": "traffic",
-        paint:{
-          "line-color" :"#ff0000",
-          "line-width" :2
-        } 
+       
       })
 
 
@@ -207,6 +206,14 @@ const MapBox = () => {
 
     mapRef.current = map; // Assign the map instance to the ref
 
+     // Create a div with the class "mapbox-directions-component-keyline"
+  // const keylineDiv = document.createElement('div');
+  const keylineDiv = document.getElementsByClassName("mapboxgl-control-container");
+ 
+  if (keylineDivs.length > 0) {
+    const keylineDiv = keylineDivs[0];
+    wayRef.current.appendChild(keylineDiv);
+  }
     // geo encoder
     const geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
@@ -267,10 +274,14 @@ const MapBox = () => {
         )}?access_token=${mapboxgl.accessToken}`
       );
       const data = response.data;
-      const route = data.routes[0];
-      const geometry = route.geometry;
+      const route = data.trips;
+   
 
-     renderRoute(geometry);
+     renderRoute(routes[0].geometry);
+
+     for (let i =1 ; i<routes.length; i++){
+      renderRoute(routes[i].geometry);
+     }
 
     } catch (error) {
       console.error("Error fetching optimized route",error);
@@ -323,7 +334,9 @@ const MapBox = () => {
           maxWidth={maxWidth}
           mapstyle={() => setMapStyle(!mapStyle)}
         />
-
+      <div ref={wayRef}>
+        Reference here
+      </div>
       </div>
 
       <div className="w-full">
