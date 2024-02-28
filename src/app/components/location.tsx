@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Geocode from "./map/geocode";
@@ -29,66 +29,47 @@ export default function LocationsSearch({
   maxSize,
   maxWidth,
   handleApply,
-}: LocationsSearchProps) {
+}: LocationsSearchProps): React.JSX.Element {
+
+  const [inputValue, setInputValue] = useState('');
+
+  const handleInputChangeLocal = (event: React.ChangeEvent<HTMLInputElement> )=>{
+    setInputValue(event.target.value);
+  };
+  
 
 
   return (
     <div className="grid gap-4">
       <div className="grid gap-2">
         <div className="grid grid-cols-3 items-center gap-4">
-          <Label
-            htmlFor="width"
-            className="static  justify-left inset-0 my-0  left-0 top-0"
-          >
-            Within
-          </Label>
-          <Geocode
-            value={query}
-            onChange={handleInputChange}
-            suggestions={suggestions}
-            onSelec t={handleResultSelect}
-          />
+        
+          
           <div className="uppercase col-span-3 mx-auto items-center justify-center">
-            OR
+            
           </div>
         </div>
-        <div className="grid grid-cols-3 items-center gap-4">
-          <Label htmlFor="maxWidth">Around</Label>
+        <div className="grid grid-cols-3 items-center gap-4 py-4">
+         
           <Input
-            value={maxWidth}
-            id="maxWidth"
-            defaultValue="Gauteng"
-            className="col-span-2 h-8"
-            onChange={(event) =>
-              handleApply(parseInt(event.target.value), maxWidth)
-            }
+           type="text"
+            value={inputValue}
+            onChange={handleInputChangeLocal}
+            placeholder="Choose location A"
+            className="col-span-3 h-10"
           />
         </div>
-        <div className="grid grid-cols-3 items-center gap-4">
-          <Label htmlFor="minSize">Min. Size</Label>
+        <div className="grid grid-cols-3 items-center gap-4 py-7">
+          
           <Input
-            id="minSize"
-            value={minSize}
-            onChange={(event) =>
-              handleApply(parseInt(event.target.value), maxSize)
-            }
-            className="col-span-2 h-8"
+            type="text"
+            value={inputValue}
+            onChange={handleInputChangeLocal}
+            className="col-span-3 h-10"
+            placeholder="Choose Location B"
           />
         </div>
-        <div className="grid grid-cols-3 items-center gap-4">
-          <Label htmlFor="maxSize">Max. Size</Label>
-          <Input
-            id="maxSize"
-            value={maxSize}
-            onChange={(event) =>
-              handleApply(minSize, parseInt(event.target.value))
-            }
-            className="col-span-2 h-8"
-          />
-        </div>
-
-
-
+       
         <div>
 
 
