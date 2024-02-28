@@ -16,42 +16,11 @@ import { Button } from "@/components/ui/button";
 import { TiWeatherCloudy } from "react-icons/ti";
 import { FaGasPump } from "react-icons/fa";
 
-const SearchTab = ({
-  query,
-  handleInputChange,
-  suggestions,
-  handleResultSelect,
-  mapstyle,
-}: any) => {
-  const [min, setMin] = useState<number>(10); // Provide a default value (e.g., 0)
-  const [max, setMax] = useState<number>(20); // Provide a default value (e.g., 0)
-  const [width, setWidth] = useState<number>(5); // Provide a default value (e.g., 0)
-
-  const handleApply = (
-    minValue: number,
-    maxValue: number,
-    maxWidth: number
-  ) => {
-    // Update the min and max values
-    setMin(isNaN(minValue) ? 0 : minValue);
-    setMax(isNaN(maxValue) ? 0 : maxValue);
-    setWidth(maxWidth);
-  };
-
+const SearchTab = ({ mapstyle, componentRef }: any) => {
   return (
     <>
-      <Tab
-        query={query}
-        handleInputChange={handleInputChange}
-        suggestions={suggestions}
-        handleResultSelect={handleResultSelect}
-        minSize={min} // Pass minSize as prop
-        maxSize={max} // Pass maxSize as prop
-        maxWidth={width}
-        handleApply={handleApply}
-        mapstyle={mapstyle}
-      >
-        This is a child
+      <Tab mapstyle={mapstyle}>
+        <div ref={componentRef}></div>
       </Tab>
     </>
   );
@@ -63,10 +32,7 @@ const MapBox = () => {
   // this is setting up the location to South Africa Gauteng (initial location)
   const [lng] = useState(28.0473);
   const [lat] = useState(-26.2041);
-  // const mapStyle = "mapbox://styles/mapbox/satellite-v9";
 
-  // mapbox://styles/mapbox/satellite-v9
-  // mapbox://styles/mapbox/satellite-streets-v11
   const [query, setQuery] = useState("");
   // when a user click
   const [suggestions, setSuggestions] = useState([]);
@@ -80,10 +46,6 @@ const MapBox = () => {
   // Use a ref to store the map instance
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const wayRef = useRef<any>(null);
-  const [min, setMin] = useState<number>(10); // Provide a default value (e.g., 0)
-  const [max, setMax] = useState<number>(20); // Provide a default value (e.g., 0)
-
-  const [maxWidth, setWidth] = useState<number>(20); // Provide a default value (e.g., 0)
 
   // Declare the map variable outside the useEffect
   mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX as string;
@@ -202,6 +164,13 @@ const MapBox = () => {
       "mapboxgl-control-container"
     );
 
+    const openstreetFooter: any = document.getElementsByClassName(
+      "mapboxgl-ctrl-bottom-right"
+    );
+
+    openstreetFooter[0].style.visibility = "hidden";
+    openstreetFooter[0].style.height = "0";
+
     const keyline = keylineDiv[0];
     wayRef.current.appendChild(keyline);
 
@@ -272,10 +241,10 @@ const MapBox = () => {
       const data = response.data;
       const route = data.trips;
 
-      renderRoute(routes[0].geometry);
+      renderRoute(route[0].geometry);
 
-      for (let i = 1; i < routes.length; i++) {
-        renderRoute(routes[i].geometry);
+      for (let i = 1; i < route.length; i++) {
+        renderRoute(route[i].geometry);
       }
     } catch (error) {
       console.error("Error fetching optimized route", error);
@@ -320,12 +289,10 @@ const MapBox = () => {
           handleResultSelect={handleResultSelect}
           query={query}
           suggestions={suggestions}
-          min={min}
-          max={max}
-          maxWidth={maxWidth}
           mapstyle={() => setMapStyle(!mapStyle)}
+          componentRef={wayRef}
         ></SearchTab>
-        <div ref={wayRef}>Reference here</div>
+        {/* <div ref={wayRef}>Reference here</div> */}
       </div>
 
       <div className="w-full">

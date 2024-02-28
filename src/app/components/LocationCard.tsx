@@ -1,46 +1,22 @@
 import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 
-import LocationsSearch from "./location";
+// import LocationsSearch from "./location";
+import { Button } from "@/components/ui/button";
 
 interface LocationCardProps {
-  query: string;
-  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  suggestions: any[]; // Adjust the type as per your data structure
-  handleResultSelect: (result: any, polygons: any) => Promise<void>;
-  minSize: number;
-  maxSize: number;
-  handleApply: () => void;
   children?: any;
 }
 
-export function LocationCard({
-  query,
-  handleInputChange,
-  suggestions,
-  handleResultSelect,
-  minSize,
-  maxSize,
-  handleApply,
-  children,
-}: LocationCardProps) {
+export function LocationCard({ children }: LocationCardProps) {
   return (
     <Card className="mx-auto py-6  w-full h-full max-w-[400px] rounded-2xl">
       <CardContent>
         <form>
-          <div className="grid w-full items-center gap-4">
-            {children}
-
-            <LocationsSearch
-              query={query}
-              handleInputChange={handleInputChange}
-              suggestions={suggestions}
-              handleResultSelect={handleResultSelect}
-              minSize={minSize}
-              maxSize={maxSize}
-              maxWidth={20}
-              handleApply={handleApply}
-            />
+          <div className="grid w-full items-center gap-4">{children}</div>
+          <div className="justify-between ">
+            <Button variant="outline">Cancel</Button>
+            <Button variant="outline">Apply</Button>
           </div>
         </form>
       </CardContent>

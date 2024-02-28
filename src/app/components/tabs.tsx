@@ -3,30 +3,11 @@ import { LocationCard } from "./LocationCard";
 import { Filters } from "./filters";
 
 type TabProps = {
-  query: string;
-  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  suggestions: any[];
-  handleResultSelect: (result: any, polygons: any) => Promise<void>;
-  minSize: number;
-  maxSize: number;
-  maxWidth: number;
-  handleApply: any;
   mapstyle?: any;
   children?: any;
 };
 
-export function Tab({
-  query,
-  handleInputChange,
-  suggestions,
-  handleResultSelect,
-  minSize,
-  maxSize,
-  maxWidth,
-  handleApply,
-  mapstyle,
-  children,
-}: TabProps) {
+export function Tab({ mapstyle, children }: TabProps) {
   return (
     <Tabs defaultValue="account" className="w-[400px]  ">
       <div className="text-lg py-2 font-medium leading-none tracking-tight">
@@ -42,18 +23,7 @@ export function Tab({
       </TabsList>
 
       <TabsContent value="account">
-        <LocationCard
-          query={query}
-          handleInputChange={handleInputChange}
-          suggestions={suggestions}
-          handleResultSelect={handleResultSelect}
-          minSize={minSize}
-          maxSize={maxSize}
-          // maxWidth={maxWidth}
-          handleApply={handleApply}
-        >
-          {children}
-        </LocationCard>
+        <LocationCard>{children}</LocationCard>
       </TabsContent>
       <TabsContent value="password">
         <Filters />
