@@ -50,7 +50,9 @@ const SearchTab = ({
         maxWidth={width}
         handleApply={handleApply}
         mapstyle={mapstyle}
-      />
+      >
+        This is a child
+      </Tab>
     </>
   );
 };
@@ -81,13 +83,10 @@ const MapBox = () => {
   const [min, setMin] = useState<number>(10); // Provide a default value (e.g., 0)
   const [max, setMax] = useState<number>(20); // Provide a default value (e.g., 0)
 
-
   const [maxWidth, setWidth] = useState<number>(20); // Provide a default value (e.g., 0)
-
 
   // Declare the map variable outside the useEffect
   mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX as string;
-
 
   const handleResultSelect = async (result: any, polygons: any) => {
     const coordinates = result.geometry.coordinates;
@@ -120,10 +119,7 @@ const MapBox = () => {
     }
   };
 
- 
   useEffect(() => {
-
-
     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX as string;
 
     let map: mapboxgl.Map;
@@ -137,37 +133,31 @@ const MapBox = () => {
       maxBounds: [
         [-24.6, -46.8], // Southwest coordinates of South Africa Gauteng
         [-51.3, 37.3], // Northeast coordinates of South Africa Gauteng
-
       ],
     });
 
     map.on("load", () => {
       map.addControl(new mapboxgl.NavigationControl());
-    
 
       map.addControl(
-      new MapboxDirections({
-        accessToken:mapboxgl.accessToken,
-        unit: "metric",
-        profile:"mapbox/driving",
-        alternatives: true,
-
-      }),
-      "top-left"
-      
+        new MapboxDirections({
+          accessToken: mapboxgl.accessToken,
+          unit: "metric",
+          profile: "mapbox/driving",
+          alternatives: true,
+        }),
+        "top-left"
       );
 
       map.addLayer({
         id: "traffic",
-        type:"line",
-        source:{
-          type:"vector",
-          url: "mapbox://mapbox.mapbox-traffic-v1"
+        type: "line",
+        source: {
+          type: "vector",
+          url: "mapbox://mapbox.mapbox-traffic-v1",
         },
         "source-layer": "traffic",
-       
-      })
-
+      });
 
       const polygons = generateRandomPolygons();
 
@@ -206,14 +196,15 @@ const MapBox = () => {
 
     mapRef.current = map; // Assign the map instance to the ref
 
-     // Create a div with the class "mapbox-directions-component-keyline"
-  // const keylineDiv = document.createElement('div');
-  const keylineDiv = document.getElementsByClassName("mapboxgl-control-container");
- 
-  if (keylineDivs.length > 0) {
-    const keylineDiv = keylineDivs[0];
-    wayRef.current.appendChild(keylineDiv);
-  }
+    // Create a div with the class "mapbox-directions-component-keyline"
+    // const keylineDiv = document.createElement('div');
+    const keylineDiv = document.getElementsByClassName(
+      "mapboxgl-control-container"
+    );
+
+    const keyline = keylineDiv[0];
+    wayRef.current.appendChild(keyline);
+
     // geo encoder
     const geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
@@ -228,7 +219,6 @@ const MapBox = () => {
 
     // Set the  display off for geocoder
     if (geocoderContainer) {
-   
       (geocoderContainer as HTMLElement).style.display = "none";
     }
 
@@ -246,18 +236,24 @@ const MapBox = () => {
 
     return () => {
       map.remove();
-      if(geocoderRef.current && typeof geocoderRef.current.off ==="function"){
-        try{
+      if (
+        geocoderRef.current &&
+        typeof geocoderRef.current.off === "function"
+      ) {
+        try {
           geocoderRef.current.off("result");
           geocoderRef.current.off("results");
-        }catch (error){
-          console.error("Error removing event listeners from Mapbox Geocoder:", error);
+        } catch (error) {
+          console.error(
+            "Error removing event listeners from Mapbox Geocoder:",
+            error
+          );
         }
-    }else{
-      console.warn("Mapbox Geocoder ref or off is not available.");
-    }
-  };
-}, [lng, lat, mapStyle, zoom]);
+      } else {
+        console.warn("Mapbox Geocoder ref or off is not available.");
+      }
+    };
+  }, [lng, lat, mapStyle, zoom]);
 
   const handleInputChange = (event: { target: { value: any } }) => {
     const input = event.target.value;
@@ -267,63 +263,58 @@ const MapBox = () => {
   };
 
   async (waypoints: any[]) => {
-    try{
-      const response =await axios.get(
+    try {
+      const response = await axios.get(
         `https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${waypoints.join(
           ";"
         )}?access_token=${mapboxgl.accessToken}`
       );
       const data = response.data;
       const route = data.trips;
-   
 
-     renderRoute(routes[0].geometry);
+      renderRoute(routes[0].geometry);
 
-     for (let i =1 ; i<routes.length; i++){
-      renderRoute(routes[i].geometry);
-     }
-
+      for (let i = 1; i < routes.length; i++) {
+        renderRoute(routes[i].geometry);
+      }
     } catch (error) {
-      console.error("Error fetching optimized route",error);
+      console.error("Error fetching optimized route", error);
     }
   };
 
   const renderRoute = (geometry: any) => {
-    if (mapRef.current){
+    if (mapRef.current) {
       mapRef.current.addSource("route", {
-        type:"geojson",
-        data:{
-          type:"Feature",
-          properties:{},
-          geometry:{
-            type :"LineString",
-            coordinates:geometry.coordinates,
-          }
-       }
-      })
-      
+        type: "geojson",
+        data: {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "LineString",
+            coordinates: geometry.coordinates,
+          },
+        },
+      });
+
       mapRef.current.addLayer({
         id: "route",
-        type:"line",
-        source:"route",
-        layout:{
-          "line-join" : "round",
+        type: "line",
+        source: "route",
+        layout: {
+          "line-join": "round",
           "line-cap": "round",
         },
-        paint:{
+        paint: {
           "line-color": "#0000ff",
-          "line-width" : 5,
+          "line-width": 5,
         },
       });
     }
   };
 
- 
-
   return (
     <div className="flex px-6 space-x-8">
       <div className=" flex w-[300px] lg:relative fixed z-10 w-full justify-between m-16 lg:m-0">
-
         <SearchTab
           handleInputChange={handleInputChange}
           handleResultSelect={handleResultSelect}
@@ -333,22 +324,19 @@ const MapBox = () => {
           max={max}
           maxWidth={maxWidth}
           mapstyle={() => setMapStyle(!mapStyle)}
-        />
-      <div ref={wayRef}>
-        Reference here
-      </div>
+        ></SearchTab>
+        <div ref={wayRef}>Reference here</div>
       </div>
 
       <div className="w-full">
-        <div id="map" >
+        <div id="map">
           <div
             data-query={query}
             className="bg-white  w-[800px] h-[800px] md:w-[1100px] h-[800px]  shadow-lg my-2 rounded-2xl"
             ref={mapContainer}
           />
-          
+        </div>
       </div>
-    </div>
     </div>
   );
 };

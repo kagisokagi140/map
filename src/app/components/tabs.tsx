@@ -12,6 +12,7 @@ type TabProps = {
   maxWidth: number;
   handleApply: any;
   mapstyle?: any;
+  children?: any;
 };
 
 export function Tab({
@@ -24,6 +25,7 @@ export function Tab({
   maxWidth,
   handleApply,
   mapstyle,
+  children,
 }: TabProps) {
   return (
     <Tabs defaultValue="account" className="w-[400px]  ">
@@ -49,7 +51,9 @@ export function Tab({
           maxSize={maxSize}
           // maxWidth={maxWidth}
           handleApply={handleApply}
-        />
+        >
+          {children}
+        </LocationCard>
       </TabsContent>
       <TabsContent value="password">
         <Filters />

@@ -1,11 +1,7 @@
 import * as React from "react";
-import {
-  Card,
-  CardContent, 
-} from "@/components/ui/card";
- 
-import LocationsSearch from "./location";
+import { Card, CardContent } from "@/components/ui/card";
 
+import LocationsSearch from "./location";
 
 interface LocationCardProps {
   query: string;
@@ -15,6 +11,7 @@ interface LocationCardProps {
   minSize: number;
   maxSize: number;
   handleApply: () => void;
+  children?: any;
 }
 
 export function LocationCard({
@@ -22,28 +19,31 @@ export function LocationCard({
   handleInputChange,
   suggestions,
   handleResultSelect,
-  minSize, maxSize, handleApply
+  minSize,
+  maxSize,
+  handleApply,
+  children,
 }: LocationCardProps) {
   return (
     <Card className="mx-auto py-6  w-full h-full max-w-[400px] rounded-2xl">
       <CardContent>
         <form>
           <div className="grid w-full items-center gap-4">
+            {children}
+
             <LocationsSearch
               query={query}
               handleInputChange={handleInputChange}
               suggestions={suggestions}
               handleResultSelect={handleResultSelect}
               minSize={minSize}
-              maxSize={maxSize} 
+              maxSize={maxSize}
+              maxWidth={20}
               handleApply={handleApply}
-
-           />
-           
+            />
           </div>
         </form>
       </CardContent>
-      
     </Card>
   );
 }
