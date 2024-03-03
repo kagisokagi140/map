@@ -2,45 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-
-.mapboxgl-ctrl-geocoder {
-  background-color: rgba(255, 255, 255, 0.9) !important;
-  border-radius: 10px !important;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.2) !important;
-  border: none !important;
-  padding: 20 !important;
-  margin: 0 !important;
-}
-
-
-
-.geocoder-pin-right { 
-    display: none !important;
-}
-
-.mapboxgl-ctrl-geocoder input{
-  padding: 10px; 
-  color: brown;
-}
-
-
-.mapboxgl-ctrl-geocoder svg{
-    margin: 2px; 
-    color: brown;
-  }
-
-  .mapboxgl-ctrl-bottom-right{
+  
+.mapboxgl-ctrl-bottom-right{
     display: none !important;
   }
 
-.mapboxgl-ctrl-geocoder ::placeholder{
-color: green;
-}
 
-.mapbox-directions-step-maneuver{
-    color: black;
-    font-size: 12px;
-    background: pink;
-    padding: 5px;
-    border-radius: 10px;
-}
+ 
