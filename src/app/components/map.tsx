@@ -1,5 +1,5 @@
 "use client";
-//import "mapbox-gl/dist/mapbox-gl.css";
+// import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useState, useEffect, useRef } from "react";
 import mapboxgl, { accessToken } from "mapbox-gl";
 import { Card } from "@/components/ui/card";
@@ -15,6 +15,7 @@ import addMapLayers from "./map/maplayers";
 import { Button } from "@/components/ui/button";
 import { TiWeatherCloudy } from "react-icons/ti";
 import { FaGasPump } from "react-icons/fa";
+import { forEach } from "jszip";
 
 const SearchTab = ({ mapstyle, componentRef }: any) => {
   return (
@@ -157,19 +158,14 @@ const MapBox = () => {
     });
 
     mapRef.current = map; // Assign the map instance to the ref
-
-    // Create a div with the class "mapbox-directions-component-keyline"
-    // const keylineDiv = document.createElement('div');
+ 
     const keylineDiv = document.getElementsByClassName(
       "mapboxgl-control-container"
     );
+ 
 
-    const openstreetFooter: any = document.getElementsByClassName(
-      "mapboxgl-ctrl-bottom-right"
-    );
-
-    openstreetFooter[0].style.visibility = "hidden";
-    openstreetFooter[0].style.height = "0";
+   
+ 
 
     const keyline = keylineDiv[0];
     wayRef.current.appendChild(keyline);

@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .mapboxgl-ctrl-geocoder{
     background-color: white !important;
     border-radius: 10px !important;
@@ -35,4 +39,10 @@
 }
 
 
+ 
+.mapboxgl-ctrl-bottom-right{
+    display: none !important;
+  }
 
+
+ 
