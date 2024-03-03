@@ -14,7 +14,7 @@ export const generateRandomPolygons = () => {
 
       const pointLat = lat + radius * Math.cos(angle) * crookedness;
       const pointLng = lng + radius * Math.sin(angle) * crookedness;
-
+      
       return [pointLng, pointLat];
     });
 
