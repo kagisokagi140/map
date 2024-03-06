@@ -118,6 +118,11 @@ function SearchPopover() {
     </div>
   );
 }
+  const searchResults: any = document.getElementsByClassName(
+      "mapboxgl-ctrl-bottom-right"
+    );
+
+    searchResults.style.zIndex = "100";
 
 export function Search() {
   return (

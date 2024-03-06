@@ -14,7 +14,7 @@ export function LocationCard({ children }: LocationCardProps) {
       <CardContent>
         <form>
           <div className="grid w-full items-center gap-4">{children}</div>
-          <div className="justify-between ">
+          <div className="justify-between">
             <Button variant="outline">Cancel</Button>
             <Button variant="outline">Apply</Button>
           </div>
