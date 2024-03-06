@@ -15,6 +15,7 @@ import addMapLayers from "./map/maplayers";
 import { Button } from "@/components/ui/button";
 import { TiWeatherCloudy } from "react-icons/ti";
 import { FaGasPump } from "react-icons/fa";
+import "../public.tsx/customStyles.css";
 
 const SearchTab = ({ mapstyle, componentRef }: any) => {
   return (
@@ -181,10 +182,12 @@ const MapBox = () => {
 
     const keyline = keylineDiv[0];
     wayRef.current.appendChild(keyline);
-    }
+    
 
   
-    // geo encoder
+    // geo encoder//
+
+
     const geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
@@ -215,24 +218,22 @@ const MapBox = () => {
     geocoderRef.current = geocoder;
 
     return () => {
-      map.remove();
-      if (
-        geocoderRef.current &&
-        typeof geocoderRef.current.off === "function"
-      ) {
-        try {
-          geocoderRef.current.off("result");
-          geocoderRef.current.off("results");
-        } catch (error) {
+     map.remove();
+      if (geocoderRef.current&&
+        typeof geocoderRef.current.off ==="function"
+        ) {
+       try{
+          geocoderRef.current?.off("result");
+          geocoderRef.current?.off("results");
+        } catch(error){
           console.error(
-            "Error removing event listeners from Mapbox Geocoder:",
-            error
+            "Error removing event listener from MApbox Geocoder:",error
           );
         }
-      } else {
-        console.warn("Mapbox Geocoder ref or off is not available.");
-      }
-    };
+    }else{
+      console.warn("Mapbox Geocoder ref or off is not available");
+    }
+    }
   }, [lng, lat, mapStyle, zoom]);
 
   const handleInputChange = (event: { target: { value: any } }) => {

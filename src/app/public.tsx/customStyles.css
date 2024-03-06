@@ -1,4 +1,6 @@
 .geocoder-pin-right{
     display:none !important;
 }
-
+div.mapbox-directions-step-maneuver{
+    background-color:#ffffff;
+}
