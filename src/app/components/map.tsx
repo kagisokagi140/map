@@ -15,6 +15,8 @@ import addMapLayers from "./map/maplayers";
 import { Button } from "@/components/ui/button";
 import { TiWeatherCloudy } from "react-icons/ti";
 import { FaGasPump } from "react-icons/fa";
+import "../public.tsx/customStyles.css";
+
 
 const SearchTab = ({ mapstyle, componentRef }: any) => {
   return (
@@ -45,7 +47,7 @@ const MapBox = () => {
   const geocoderRef = useRef<MapboxGeocoder | null>(null);
   // Use a ref to store the map instance
   const mapRef = useRef<mapboxgl.Map | null>(null);
-  const wayRef = useRef<any>(null);
+  const wayRef = useRef<HTMLElement>(null);
 
   // Declare the map variable outside the useEffect
   mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX as string;
@@ -64,6 +66,9 @@ const MapBox = () => {
 
       const data = await response.json();
       const isochrones = data.isochrones;
+    
+
+
 
       let map = mapRef.current;
       if (mapRef.current) {
@@ -101,22 +106,24 @@ const MapBox = () => {
     map.on("load", () => {
       map.addControl(new mapboxgl.NavigationControl());
 
-      map.addControl(
-        new MapboxDirections({
+      
+       const directions = new MapboxDirections({
           accessToken: mapboxgl.accessToken,
           unit: "metric",
           profile: "mapbox/driving",
           alternatives: true,
-        }),
-        "top-left"
-      );
+          waypoints:[],
+          
+        });
+        map.addControl(directions,"top-left")
+      
 
       map.addLayer({
         id: "traffic",
         type: "line",
         source: {
           type: "vector",
-          url: "mapbox://mapbox.mapbox-traffic-v1",
+          url: "mapbox://mapbox.mapbox-traffic",
         },
         "source-layer": "traffic",
       });
@@ -131,6 +138,8 @@ const MapBox = () => {
         closeButton: true,
         closeOnClick: true,
       });
+   
+
 
       map.on("mouseenter", "randomPolygons", (e) => {
         map.getCanvas().style.cursor = "pointer";
@@ -156,8 +165,12 @@ const MapBox = () => {
       });
     });
 
+
     mapRef.current = map; // Assign the map instance to the ref
 
+
+
+    
     // Create a div with the class "mapbox-directions-component-keyline"
     // const keylineDiv = document.createElement('div');
     const keylineDiv = document.getElementsByClassName(
@@ -170,14 +183,17 @@ const MapBox = () => {
 
     openstreetFooter[0].style.visibility = "hidden";
     openstreetFooter[0].style.height = "0";
-
+if(wayRef.current && keylineDiv.length >0){
     const keyline = keylineDiv[0];
     wayRef.current.appendChild(keyline);
+    }
 
+  
     // geo encoder
     const geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
+      marker:false,
     });
 
     geocoderRef.current = geocoder;
@@ -279,6 +295,8 @@ const MapBox = () => {
         },
       });
     }
+
+    
   };
 
   return (
@@ -291,7 +309,7 @@ const MapBox = () => {
           suggestions={suggestions}
           mapstyle={() => setMapStyle(!mapStyle)}
           componentRef={wayRef}
-        ></SearchTab>
+        />
         {/* <div ref={wayRef}>Reference here</div> */}
       </div>
 

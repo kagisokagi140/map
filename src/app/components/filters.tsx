@@ -1,5 +1,5 @@
 import * as React from "react";
-
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,7 +22,10 @@ import { cn } from "@/lib/utils";
 
 type CardProps = React.ComponentProps<typeof Card>;
 
+
 function Constraints({ className, ...props }: CardProps) {
+ 
+
   return (
     <div className={cn("", className)} {...props}>
       <div className=" flex items-center space-x-2 rounded-md   my-4">
@@ -37,6 +40,7 @@ slowing down the flow of traffic.
           </p>
         </div>
  
+       
       </div>
 
       
@@ -45,12 +49,12 @@ slowing down the flow of traffic.
 }
 
 export function Filters() {
+
   return (
     <Card className="mx-auto py-6 w-full h-full max-w-[400px] rounded-2xl">
       <CardContent>
         <form>
           <div className="grid w-full items-center gap-4">
-
             <Ownership />
             <Constraints />
           </div>

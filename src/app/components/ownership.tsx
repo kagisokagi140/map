@@ -68,7 +68,7 @@ export function Ownership() {
 
   return (
     <div className="flex items-center space-x-4">
-      <p className="text-sm text-muted-foreground font-medium">Status</p>
+     
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
