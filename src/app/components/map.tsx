@@ -181,8 +181,9 @@ const MapBox = () => {
     openstreetFooter[0].style.height = "0";
 
     const keyline = keylineDiv[0];
+    if(wayRef.current){
     wayRef.current.appendChild(keyline);
-    
+    }
 
   
     // geo encoder//
