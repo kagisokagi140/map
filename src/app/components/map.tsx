@@ -173,6 +173,7 @@ const MapBox = () => {
       "mapboxgl-control-container"
     );
 
+ 
     const openstreetFooter: any = document.getElementsByClassName(
       "mapboxgl-ctrl-bottom-right"
     );
